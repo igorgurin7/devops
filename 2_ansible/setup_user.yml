@@ -1,0 +1,55 @@
+- name: Setup user
+  hosts: all
+  become: yes
+
+  vars:
+    username: devuser
+    ssh_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOnIEObQUSIPHf/zynMRKGv2D1AG6fY0F6iq6DQvCc5H igorgurin@igurin.local"
+
+  tasks:
+
+    - name: Создать пользователя
+      user:
+        name: "{{ username }}"
+        state: present
+
+    - name: Дать sudo права
+      copy:
+        dest: "/etc/sudoers.d/{{ username }}"
+        content: "{{ username }} ALL=(ALL) NOPASSWD: ALL"
+        mode: '0440'
+
+    - name: Создать .ssh директорию
+      file:
+        path: "/home/{{ username }}/.ssh"
+        state: directory
+        owner: "{{ username }}"
+        group: "{{ username }}"
+        mode: '0700'
+
+    - name: Добавить ssh ключ
+      copy:
+        dest: "/home/{{ username }}/.ssh/authorized_keys"
+        content: "{{ ssh_key }}"
+        owner: "{{ username }}"
+        group: "{{ username }}"
+        mode: '0600'
+
+    - name: Отключить вход по паролю
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^PasswordAuthentication'
+        line: 'PasswordAuthentication no'
+
+    - name: Перезапустить ssh
+      service:
+        name: ssh
+        state: restarted
+
+    - name: Создать директорию в /opt
+      file:
+        path: "/opt/{{ username }}_dir"
+        state: directory
+        owner: "{{ username }}"
+        group: "{{ username }}"
+        mode: '0660'
