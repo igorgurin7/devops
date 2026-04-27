@@ -1,0 +1,11 @@
+- name: Отключить пароль
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?PasswordAuthentication'
+    line: 'PasswordAuthentication no'
+  notify: Перезапустить ssh
+
+- name: Убедиться, что ssh запущен
+  service:
+    name: ssh
+    state: started

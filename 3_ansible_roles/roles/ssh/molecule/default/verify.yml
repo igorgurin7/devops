@@ -1,0 +1,9 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Read sshd config
+      ansible.builtin.command:
+        cmd: grep -E '^PasswordAuthentication no$' /etc/ssh/sshd_config
+      changed_when: false

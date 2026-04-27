@@ -1,0 +1,39 @@
+- name: Создать пользователей
+  user:
+    name: "{{ item.name }}"
+    state: present
+  loop: "{{ users }}"
+
+- name: Дать sudo
+  copy:
+    dest: "/etc/sudoers.d/{{ item.name }}"
+    content: "{{ item.name }} ALL=(ALL) NOPASSWD: ALL"
+    mode: '0440'
+  loop: "{{ users }}"
+
+- name: Создать .ssh
+  file:
+    path: "/home/{{ item.name }}/.ssh"
+    state: directory
+    owner: "{{ item.name }}"
+    group: "{{ item.name }}"
+    mode: '0700'
+  loop: "{{ users }}"
+
+- name: Добавить ключ
+  copy:
+    dest: "/home/{{ item.name }}/.ssh/authorized_keys"
+    content: "{{ item.key }}"
+    owner: "{{ item.name }}"
+    group: "{{ item.name }}"
+    mode: '0600'
+  loop: "{{ users }}"
+
+- name: Создать директорию
+  file:
+    path: "/opt/{{ item.name }}_dir"
+    state: directory
+    owner: "{{ item.name }}"
+    group: "{{ item.name }}"
+    mode: '0660'
+  loop: "{{ users }}"

@@ -1,0 +1,6 @@
+users:
+  - name: dev1
+    key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOnIEObQUSIPHf/zynMRKGv2D1AG6fY0F6iq6DQvCc5H igorgurin@igurin.local"
+
+  - name: dev2
+    key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOnIEObQUSIPHf/zynMRKGv2D1AG6fY0F6iq6DQvCc5H igorgurin@igurin.local"
